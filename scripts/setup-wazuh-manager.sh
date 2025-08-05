@@ -126,13 +126,18 @@ mkdir -p /etc/elasticsearch/certs
 
 # Generate certificates
 print_status "Generating SSL certificates..."
+if [[ ! -f /etc/elasticsearch/elastic-certificates.p12 ]]; then
+    /usr/share/elasticsearch/bin/elasticsearch-certutil cert -out /etc/elasticsearch/elastic-certificates.p12 -pass ""
+    chown elasticsearch:elasticsearch /etc/elasticsearch/elastic-certificates.p12
+else
+    print_warning "SSL certificate already exists at /etc/elasticsearch/elastic-certificates.p12 — skipping generation"
+fi
+
 # cd /etc/elasticsearch/certs
 # /usr/share/elasticsearch/bin/elasticsearch-certutil cert -out elastic-certificates.p12 -pass ""
 
 # Copy certificate to Elasticsearch config
 # cp elastic-certificates.p12 /etc/elasticsearch/
-/usr/share/elasticsearch/bin/elasticsearch-certutil cert -out /etc/elasticsearch/elastic-certificates.p12 -pass ""
-chown elasticsearch:elasticsearch /etc/elasticsearch/elastic-certificates.p12
 
 # Start and enable Elasticsearch
 print_status "Starting Elasticsearch..."
