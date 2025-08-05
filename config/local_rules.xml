@@ -1,0 +1,245 @@
+<!-- Custom Security Rules for Wazuh -->
+<group name="custom,security,">
+  <!-- Brute Force Attack Detection -->
+  <rule id="100001" level="10">
+    <if_sid>5716</if_sid>
+    <field name="srcip">192.168.1.0/24</field>
+    <description>Multiple failed login attempts from internal network</description>
+  </rule>
+
+  <rule id="100002" level="12">
+    <if_sid>5716</if_sid>
+    <field name="srcip">!192.168.1.0/24</field>
+    <description>Multiple failed login attempts from external network</description>
+  </rule>
+
+  <!-- SSH Attack Detection -->
+  <rule id="100003" level="8">
+    <if_sid>5710</if_sid>
+    <description>SSH login attempt with invalid user</description>
+  </rule>
+
+  <rule id="100004" level="10">
+    <if_sid>5710</if_sid>
+    <field name="srcip">!192.168.1.0/24</field>
+    <description>SSH login attempt from external network</description>
+  </rule>
+
+  <!-- Web Application Attacks -->
+  <rule id="100005" level="8">
+    <if_sid>31101</if_sid>
+    <field name="srcip">!192.168.1.0/24</field>
+    <description>SQL injection attempt detected</description>
+  </rule>
+
+  <rule id="100006" level="8">
+    <if_sid>31102</if_sid>
+    <field name="srcip">!192.168.1.0/24</field>
+    <description>XSS attack attempt detected</description>
+  </rule>
+
+  <rule id="100007" level="8">
+    <if_sid>31103</if_sid>
+    <field name="srcip">!192.168.1.0/24</field>
+    <description>Directory traversal attempt detected</description>
+  </rule>
+
+  <!-- File Integrity Monitoring -->
+  <rule id="100008" level="7">
+    <if_sid>550</if_sid>
+    <field name="file">/etc/passwd</field>
+    <description>Critical system file modified: /etc/passwd</description>
+  </rule>
+
+  <rule id="100009" level="7">
+    <if_sid>550</if_sid>
+    <field name="file">/etc/shadow</field>
+    <description>Critical system file modified: /etc/shadow</description>
+  </rule>
+
+  <rule id="100010" level="6">
+    <if_sid>550</if_sid>
+    <field name="file">/etc/sudoers</field>
+    <description>System configuration file modified: /etc/sudoers</description>
+  </rule>
+
+  <!-- Process Monitoring -->
+  <rule id="100011" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">nc</field>
+    <description>Netcat process started</description>
+  </rule>
+
+  <rule id="100012" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">nmap</field>
+    <description>Nmap process started</description>
+  </rule>
+
+  <rule id="100013" level="10">
+    <if_sid>1002</if_sid>
+    <field name="process">cryptominer</field>
+    <description>Cryptocurrency miner detected</description>
+  </rule>
+
+  <!-- Network Activity -->
+  <rule id="100014" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">wget</field>
+    <field name="command">wget.*http://</field>
+    <description>File download from HTTP (insecure)</description>
+  </rule>
+
+  <rule id="100015" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">curl</field>
+    <field name="command">curl.*http://</field>
+    <description>File download from HTTP (insecure)</description>
+  </rule>
+
+  <!-- Database Security -->
+  <rule id="100016" level="7">
+    <if_sid>1002</if_sid>
+    <field name="process">mysql</field>
+    <field name="command">mysql.*-u.*root</field>
+    <description>MySQL root login attempt</description>
+  </rule>
+
+  <!-- Windows Specific Rules -->
+  <rule id="100017" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">powershell</field>
+    <field name="command">powershell.*-enc</field>
+    <description>PowerShell with encoded command</description>
+  </rule>
+
+  <rule id="100018" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">cmd</field>
+    <field name="command">cmd.*/c.*powershell</field>
+    <description>Command prompt launching PowerShell</description>
+  </rule>
+
+  <!-- Registry Monitoring -->
+  <rule id="100019" level="7">
+    <if_sid>1002</if_sid>
+    <field name="process">reg</field>
+    <field name="command">reg.*add.*HKEY_LOCAL_MACHINE</field>
+    <description>Registry modification in HKLM</description>
+  </rule>
+
+  <!-- Service Manipulation -->
+  <rule id="100020" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">sc</field>
+    <field name="command">sc.*create</field>
+    <description>New service creation attempt</description>
+  </rule>
+
+  <!-- Scheduled Task Creation -->
+  <rule id="100021" level="7">
+    <if_sid>1002</if_sid>
+    <field name="process">schtasks</field>
+    <field name="command">schtasks.*/create</field>
+    <description>New scheduled task creation</description>
+  </rule>
+
+  <!-- User Account Management -->
+  <rule id="100022" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">useradd</field>
+    <description>New user account creation</description>
+  </rule>
+
+  <rule id="100023" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">usermod</field>
+    <field name="command">usermod.*-G.*sudo</field>
+    <description>User added to sudo group</description>
+  </rule>
+
+  <!-- Package Management -->
+  <rule id="100024" level="5">
+    <if_sid>1002</if_sid>
+    <field name="process">yum</field>
+    <field name="command">yum.*install</field>
+    <description>Package installation via yum</description>
+  </rule>
+
+  <rule id="100025" level="5">
+    <if_sid>1002</if_sid>
+    <field name="process">apt</field>
+    <field name="command">apt.*install</field>
+    <description>Package installation via apt</description>
+  </rule>
+
+  <!-- Firewall Changes -->
+  <rule id="100026" level="7">
+    <if_sid>1002</if_sid>
+    <field name="process">firewall-cmd</field>
+    <description>Firewall configuration change</description>
+  </rule>
+
+  <rule id="100027" level="7">
+    <if_sid>1002</if_sid>
+    <field name="process">iptables</field>
+    <description>IPTables configuration change</description>
+  </rule>
+
+  <!-- Log Tampering -->
+  <rule id="100028" level="9">
+    <if_sid>1002</if_sid>
+    <field name="process">rm</field>
+    <field name="command">rm.*/var/log</field>
+    <description>Log file deletion attempt</description>
+  </rule>
+
+  <rule id="100029" level="8">
+    <if_sid>1002</if_sid>
+    <field name="process">echo</field>
+    <field name="command">echo.*>.*/var/log</field>
+    <description>Log file modification attempt</description>
+  </rule>
+
+  <!-- System Information Gathering -->
+  <rule id="100030" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">uname</field>
+    <description>System information gathering</description>
+  </rule>
+
+  <rule id="100031" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">whoami</field>
+    <description>User identity check</description>
+  </rule>
+
+  <!-- Network Information -->
+  <rule id="100032" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">ifconfig</field>
+    <description>Network interface information gathering</description>
+  </rule>
+
+  <rule id="100033" level="6">
+    <if_sid>1002</if_sid>
+    <field name="process">netstat</field>
+    <description>Network connection information gathering</description>
+  </rule>
+
+  <!-- High Frequency Events -->
+  <rule id="100034" level="10">
+    <if_sid>100001</if_sid>
+    <frequency>5</frequency>
+    <timeframe>60</timeframe>
+    <description>Multiple security events detected in short time</description>
+  </rule>
+
+  <!-- Critical System Changes -->
+  <rule id="100035" level="12">
+    <if_sid>100008,100009</if_sid>
+    <frequency>2</frequency>
+    <timeframe>300</timeframe>
+    <description>Multiple critical system files modified</description>
+  </rule>
+</group> 
