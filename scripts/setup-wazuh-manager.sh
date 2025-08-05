@@ -120,8 +120,8 @@ xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
 xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.keystore.path: elastic-certificates.p12
-xpack.security.http.ssl.truststore.path: elastic-certificates.p12
+xpack.security.http.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
 EOF
 
 # Create certificates directory
@@ -154,6 +154,12 @@ sleep 30
 
 # Set Elasticsearch passwords
 print_status "Setting Elasticsearch passwords..."
+if curl -k --silent https://localhost:9200 > /dev/null; then
+    print_status "Elasticsearch is reachable via HTTPS"
+else
+    print_error "Elasticsearch is NOT serving HTTPS. Check elasticsearch.yml and certificates."
+    exit 1
+fi
 /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto -u "https://localhost:9200" > /tmp/elastic_passwords.txt
 
 # Install Kibana
