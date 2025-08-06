@@ -199,6 +199,12 @@ cat > /var/ossec/etc/ossec.conf << EOF
 </ossec_config>
 EOF
 
+# Ensure ossec group exists before setting permissions
+if ! getent group ossec >/dev/null; then
+    print_warning "Group 'ossec' does not exist. Creating it..."
+    groupadd ossec
+fi
+
 # Set proper permissions
 chown root:ossec /var/ossec/etc/ossec.conf
 chmod 640 /var/ossec/etc/ossec.conf

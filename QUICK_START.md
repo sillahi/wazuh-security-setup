@@ -50,10 +50,12 @@ sudo ./scripts/setup-wazuh-manager.sh
 
 ```bash
 # Copy the installation script to the VM
-scp scripts/install-rhel-agent.sh user@rhel-vm:/tmp/
+# scp scripts/install-rhel-agent.sh user@rhel-vm:/tmp/
+scp -i ~/.ssh/ssh-key-2025-07-31_private.key wazuh-security-setup/scripts/install-rhel-agent.sh opc@129.80.115.60:/tmp/
 
 # SSH to the VM and run installation
-ssh user@rhel-vm
+# ssh user@rhel-vm
+ssh -i ~/.ssh/ssh-key-2025-07-31_private.key opc@129.80.115.60
 sudo /tmp/install-rhel-agent.sh <MANAGER_IP>
 ```
 
