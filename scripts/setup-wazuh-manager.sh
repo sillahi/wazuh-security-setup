@@ -160,7 +160,12 @@ else
     print_error "Elasticsearch is NOT serving HTTPS. Check elasticsearch.yml and certificates."
     exit 1
 fi
-/usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto -u "https://localhost:9200" > /tmp/elastic_passwords.txt
+# /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto -u "https://localhost:9200" > /tmp/elastic_passwords.txt
+
+print_status "IMPORTANT: Run elasticsearch-setup-passwords manually if this is a fresh install."
+echo "Command:"
+echo "  sudo /usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto -u \"https://localhost:9200\""
+echo "Save the output to /tmp/elastic_passwords.txt for later reference."
 
 # Install Kibana
 print_status "Installing Kibana..."
