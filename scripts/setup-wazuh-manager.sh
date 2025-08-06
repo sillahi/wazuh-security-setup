@@ -188,6 +188,7 @@ EOF
 
 # Generate Kibana certificates
 print_status "Generating Kibana certificates..."
+mkdir -p /etc/kibana/certs
 cd /etc/kibana/certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout kibana.key -out kibana.crt -subj "/C=US/ST=State/L=City/O=Organization/CN=kibana"
 cp kibana.crt ca.crt
